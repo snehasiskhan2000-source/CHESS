@@ -1,64 +1,72 @@
 let board = null;
 let game = new Chess();
-let difficulty = 'easy';
+let aiLevel = 'easy';
 
 function showDifficulty() {
-    document.getElementById('home-screen').classList.add('hidden');
-    document.getElementById('difficulty-screen').classList.remove('hidden');
+    $('#home-screen').fadeOut(300, () => $('#difficulty-screen').removeClass('hidden'));
 }
 
 function startGame(level) {
-    difficulty = level;
-    document.getElementById('difficulty-screen').classList.add('hidden');
-    document.getElementById('game-screen').classList.remove('hidden');
-    
-    let config = {
+    aiLevel = level;
+    $('#difficulty-screen').fadeOut(300, () => {
+        $('#game-screen').removeClass('hidden');
+        initBoard();
+    });
+}
+
+function initBoard() {
+    const config = {
         draggable: true,
         position: 'start',
+        // This line fixes the missing pieces!
+        pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
         onDrop: handleMove
     };
-    board = Chessboard('myBoard', config);
+    board = Chessboard('board', config);
 }
 
 function handleMove(source, target) {
-    let move = game.move({ from: source, to: target, promotion: 'q' });
+    const move = game.move({ from: source, to: target, promotion: 'q' });
     if (move === null) return 'snapback';
 
-    window.setTimeout(makeComputerMove, 250);
+    updateStatus();
+    window.setTimeout(makeBestMove, 500);
 }
 
-function makeComputerMove() {
-    if (game.game_over()) return checkEndGame();
+function makeBestMove() {
+    if (game.game_over()) return;
 
-    let moves = game.moves();
-    let selectedMove;
+    const moves = game.moves();
+    const winChance = Math.random();
+    let move;
 
-    // Difficulty Logic based on your Win Rate requirements
-    let randomSeed = Math.random() * 100;
-    
-    if (difficulty === 'easy' && randomSeed < 70) {
-        // Player should win 70% of time: AI picks a random (often bad) move
-        selectedMove = moves[Math.floor(Math.random() * moves.length)];
-    } else if (difficulty === 'medium' && randomSeed < 40) {
-        selectedMove = moves[Math.floor(Math.random() * moves.length)];
+    // AI Logic based on your hidden win rates
+    if (aiLevel === 'easy' && winChance < 0.70) {
+        move = moves[Math.floor(Math.random() * moves.length)]; // Plays bad
+    } else if (aiLevel === 'medium' && winChance < 0.40) {
+        move = moves[Math.floor(Math.random() * moves.length)];
     } else {
-        // Hard mode or AI playing "smart"
-        // Simply picks the first move for this demo, usually better to integrate Stockfish.js here
-        selectedMove = moves[0]; 
+        move = moves[0]; // Simple logic for "Hard", ideally use Stockfish
     }
 
-    game.move(selectedMove);
+    game.move(move);
     board.position(game.fen());
-    
-    if (game.game_over()) checkEndGame();
+    updateStatus();
+    checkGameOver();
 }
 
-function checkEndGame() {
+function updateStatus() {
+    let status = game.turn() === 'w' ? "Your Turn" : "Thinking...";
+    if (game.in_check()) status += " (Check!)";
+    $('#status').text(status);
+}
+
+function checkGameOver() {
     if (game.in_checkmate()) {
-        if (game.turn() === 'b') { // Computer is black, computer lost
-            document.getElementById('win-screen').classList.remove('hidden');
-        } else {
-            document.getElementById('lose-screen').classList.remove('hidden');
-        }
+        if (game.turn() === 'w') $('#lose-screen').removeClass('hidden');
+        else $('#win-screen').removeClass('hidden');
+    } else if (game.in_draw()) {
+        alert("Draw!");
+        location.reload();
     }
 }
