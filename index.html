@@ -6,49 +6,50 @@
     <title>Grandmaster Elite</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div class="glass-container">
-        <div id="home-screen" class="menu-content">
-            <h1 class="logo">GRANDMASTER<br><span>ELITE</span></h1>
-            <div class="nav-links">
+        <div id="home-screen" class="menu-box">
+            <h1 class="title">GRANDMASTER<span>ELITE</span></h1>
+            <div class="nav-buttons">
                 <button onclick="showDifficulty()" class="gold-btn">PLAY COMPUTER</button>
-                <button onclick="alert('Coming Soon!')" class="glass-btn">MULTIPLAYER</button>
+                <button onclick="startMultiplayer()" class="gold-btn secondary">MULTIPLAYER</button>
             </div>
         </div>
 
-        <div id="difficulty-screen" class="menu-content hidden">
-            <h2 class="section-title">CHOOSE CHALLENGE</h2>
-            <div class="nav-links">
-                <button onclick="startGame('easy')" class="difficulty-btn">INITIATE</button>
-                <button onclick="startGame('medium')" class="difficulty-btn">INTERMEDIATE</button>
-                <button onclick="startGame('hard')" class="difficulty-btn">ELITE</button>
+        <div id="difficulty-screen" class="menu-box hidden">
+            <h2 class="subtitle">SELECT RANK</h2>
+            <div class="nav-buttons">
+                <button onclick="startGame('easy')" class="rank-btn">APPRENTICE</button>
+                <button onclick="startGame('medium')" class="rank-btn">CHALLENGER</button>
+                <button onclick="startGame('hard')" class="rank-btn">GRANDMASTER</button>
             </div>
         </div>
 
-        <div id="game-screen" class="hidden">
-            <div id="myBoard"></div>
-            <div class="status-bar">
-                <span id="status">Your Turn</span>
-                <button onclick="location.reload()" class="resign-btn">RESIGN</button>
+        <div id="game-screen" class="hidden animate-fade">
+            <div id="board" class="chess-board"></div>
+            <div class="game-controls">
+                <div id="status" class="status-text">White to Move</div>
+                <button onclick="location.reload()" class="resign-link">Resign Game</button>
             </div>
         </div>
     </div>
 
     <div id="win-screen" class="end-screen hidden">
-        <div class="modal animate-win">
-            <h1>🏆 VICTORY</h1>
-            <p>You have outmaneuvered the Elite AI.</p>
-            <button onclick="location.reload()" class="gold-btn">PLAY AGAIN</button>
+        <div class="end-content">
+            <h1 class="victory-text">VICTORY</h1>
+            <p>You have conquered the board.</p>
+            <button onclick="location.reload()" class="gold-btn">NEW CHALLENGE</button>
         </div>
     </div>
 
     <div id="lose-screen" class="end-screen hidden">
-        <div class="modal animate-lose">
-            <h1>CHECKMATE</h1>
-            <p>The AI has secured the board.</p>
-            <button onclick="location.reload()" class="gold-btn">REMATCH</button>
+        <div class="end-content">
+            <h1 class="defeat-text">DEFEAT</h1>
+            <p>The AI has outmaneuvered you.</p>
+            <button onclick="location.reload()" class="gold-btn">REVENGE</button>
         </div>
     </div>
 
